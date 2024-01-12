@@ -1,0 +1,77 @@
+import random
+import json
+
+def save_scores(scores):
+    with open('scores.json', 'w') as file:
+        json.dump(scores, file)
+
+def load_scores():
+    try:
+        with open('scores.json', 'r') as file:
+            scores = json.load(file)
+    except FileNotFoundError:
+        scores = {}
+    return scores
+
+def play_game():
+    secret_number = random.randint(1, 100)
+    attempts = 0
+    player_name = input("Podaj swoje imię: ")
+
+    while True:
+        guess = int(input("Zgadnij liczbę (1-100): "))
+        attempts += 1
+
+        if guess == secret_number:
+            print(f"Brawo, {player_name}! Zgadłeś liczbę {secret_number} po {attempts} próbach.")
+            return attempts
+        elif guess < secret_number:
+            print("Za mało!")
+        else:
+            print("Za dużo!")
+
+def show_scores(scores):
+    print("Tablica wyników:")
+    for player, attempts in scores.items():
+        print(f"{player}: {attempts} prób")
+
+def settings_menu():
+    print("1. Zmiana poziomu trudności")
+    print("2. Powrót")
+
+def main():
+    scores = load_scores()
+
+    while True:
+        print("=== MENU GŁÓWNE ===")
+        print("1. Rozpocznij grę")
+        print("2. Tablica wyników")
+        print("3. Ustawienia")
+        print("4. Wyjście")
+
+        choice = input("Wybierz opcję: ")
+
+        if choice == '1':
+            attempts = play_game()
+            player_name = input("Podaj swoje imię: ")
+            scores[player_name] = attempts
+            save_scores(scores)
+        elif choice == '2':
+            show_scores(scores)
+        elif choice == '3':
+            settings_menu()
+            setting_choice = input("Wybierz opcję: ")
+            if setting_choice == '1':
+                print("Funkcja niedostępna w przykładowej implementacji.")
+            elif setting_choice == '2':
+                continue
+            else:
+                print("Nieprawidłowy wybór.")
+        elif choice == '4':
+            print("Dziękujemy za grę! Do widzenia.")
+            break
+        else:
+            print("Nieprawidłowy wybór. Spróbuj ponownie.")
+
+if __name__ == "__main__":
+    main()
